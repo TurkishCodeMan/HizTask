@@ -22,8 +22,6 @@ const user = reactive({
   cc_exp_cvv: 0,
 });
 
-
-
 function submitForm() {
   return client(`payment`, {
     data: {
@@ -39,12 +37,20 @@ function submitForm() {
       seats: selectedSeats.value.map((val: Seat) => val.id),
     },
   })
-    .then((data) => router.push("/"))
+    .then((data) => {
+      notify({
+        title: "Success",
+        text: "Successing Reservation.",
+        type: "success",
+      });
+      router.push("/");
+    })
     .catch((err) => {
-        notify({
-  title: "Error",
-  text: err?.error?.message,
-});
+      notify({
+        title: "Error",
+        text: err?.error?.message,
+        type: "warn",
+      });
     });
 }
 </script>
@@ -128,6 +134,5 @@ function submitForm() {
         </button>
       </form>
     </div>
-   
   </section>
 </template>

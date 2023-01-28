@@ -9,18 +9,18 @@ import type { EventCategory } from "@/utils/interfaces";
 
 const route = useRoute();
 const { id } = route.params;
-const { url } = route.query;
+const { url } = route.params;
 const router = useRouter();
 
 const { data, isLoading, isSuccess } = useSingleEvent(id as string);
 const event = computed(() => data.value);
-
-const selectedCategoryId = ref([]);
+console.log(event);
+const selectedCategoryId = ref();
 const { eventCategoryId } = storeToRefs(useTicketStore());
 
 function submit() {
-  eventCategoryId.value = +selectedCategoryId.value[0];
-  router.push(`/seat-plans/${id}/${selectedCategoryId.value[0]}`);
+  eventCategoryId.value = +selectedCategoryId.value;
+  router.push(`/seat-plans/${id}/${selectedCategoryId.value}`);
 }
 </script>
 
@@ -31,7 +31,7 @@ function submit() {
         <h1 class="font-bold text-2xl mb-3">{{ event?.title }}</h1>
         <img
           class="rounded-md"
-          :src="(url as string)"
+          :src="event?.image_url"
           :alt="event?.description"
         />
       </header>
@@ -62,7 +62,7 @@ function submit() {
           <div class="flex items-center pl-3 my-3">
             <input
               :id="String(category.id)"
-              type="checkbox"
+              type="radio"
               :value="category.id"
               v-model="selectedCategoryId"
               class="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
@@ -72,7 +72,9 @@ function submit() {
               class="w-full py-3 ml-2 text-xl font-medium text-gray-900"
               >{{ category.name }}</label
             >
-            <label class="text-2xl font-bold" for="">{{ category.price + `TL` }}</label>
+            <label class="text-2xl font-bold" for="">{{
+              category.price + `TL`
+            }}</label>
           </div>
         </li>
       </ul>

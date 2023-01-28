@@ -6,16 +6,17 @@ import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useTicketStore } from "@/stores/ticket";
 import type { Event } from "@/utils/interfaces";
-const { data, isSuccess,isError,isLoading } = useEvents();
-const router=useRouter()
+import EventComponent from "@/components/EventComponent.vue";
+
+const { data, isSuccess, isError, isLoading } = useEvents();
+const router = useRouter();
 const items = computed(() => data.value);
 
 const { eventId } = storeToRefs(useTicketStore());
 
-
-function submit(item:Event){
-  eventId.value=+item.id;
-  router.push(`/event/${item.id}?url=${item.image_url}`)
+function submit(item: Event) {
+  eventId.value = +item.id;
+  router.push(`/event/${item.id}`);
 }
 </script>
 
@@ -32,27 +33,7 @@ function submit(item:Event){
           </tr>
         </thead>
         <tbody>
-          <tr
-           
-            v-for="item in items"
-            :key="item.id"
-            @click="()=>submit(item)"
-            class="bg-gray-200 mb-2 hover:bg-gray-300 transition-all rounded-sm"
-          >
-            <td >
-              <img
-                class="rounded-md"
-                :src="item.image_url"
-                :alt="item.description"
-                width="300"
-              />
-            </td>
-            <td>{{ item.title }}</td>
-            <td>{{ item.venue.name }}</td>
-            <td>
-              {{ (formatRelative(new Date(), 3), new Date(item.event_date.trim())) }}
-            </td>
-          </tr>
+          <EventComponent :items="(items as Event[])" :submit="submit" />
         </tbody>
       </table>
     </div>
